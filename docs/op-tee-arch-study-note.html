@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>04.op-tee-arch-study-note</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="trustzone和op-tee-学习研究">TrustZone和OP-TEE 学习研究</h1>
+<p>前言：</p>
+<p>最近学习TrustZone和GlobalPlatform定义的TEE，及其相关的API，为了更好的理解TEE的运行机制，为此针对开源的op-tee代码进行了分析和总结。</p>
+<h2 id="trustzone-和ta-interface">1.TrustZone 和TA Interface</h2>
+<h3 id="trustzone-整体架构">1.1 TrustZone 整体架构</h3>
+<p>ARM提出来TrustZone的概念，将运行环境分为安全和非安全两部分，安全执行TEE（Trusted
+Excution Environment）由TrustZone硬件和Trusted OS构成。</p>
+<p>ARM的trustzone架构如下：</p>
+<figure>
+<img src="./imgs/arm-trustzone.drawio.png"
+alt="arm-trustzone.drawio.png" />
+<figcaption aria-hidden="true">arm-trustzone.drawio.png</figcaption>
+</figure>
+<p>处理器通过系统配置寄存器SCR.NS(security configure
+register-Non-Secure-bit)的取值来判断当前cpu处于安全状态还是非安全状态</p>
+<p>SCR.NS的设置由firmware（通常为ATF，Arm Trusted Firmware）或者security
+monitor中完成，并且只能在EL3的级别上完成状态的切换。切换的简单逻辑步骤如下：</p>
+<p>非安全到安全：</p>
+<ul>
+<li>保存非安全世界的寄存器</li>
+<li>恢复安全世界的寄存器</li>
+<li>设置SCR.NS=0（切换到安全状态）</li>
+</ul>
+<p>安全到非安全：</p>
+<ul>
+<li>保存安全世界的寄存器</li>
+<li>恢复非安全世界的寄存器</li>
+<li>设置SCR.NS=1(切换到非安全状态)</li>
+</ul>
+<h3 id="arm-tee整体架构">1.2 ARM-TEE整体架构</h3>
+<figure>
+<img src="./imgs/tz-software-architecture.drawio.png"
+alt="tz-software-architecture.drawio.png" />
+<figcaption
+aria-hidden="true">tz-software-architecture.drawio.png</figcaption>
+</figure>
+<p>几点说明：</p>
+<ul>
+<li>非安全世界的Application不能直接调用安全世界的service，必须通过封装的API，通过底层驱动触发SMC或者中断请求来完成服务器请求。</li>
+<li>安全世界和非安全世界的消息通信是如何进行的？因为安全世界和非安全世界的内存是物理隔离的？但是安全世界可以查看非安全世界的内存，<strong>因此通信的消息只能存放在非安全世界中</strong>，并通过底层的MailBox或者msg
+buffer机制完成。</li>
+<li>安全世界和非安全世界的消息通信引发另一个问题，即安全世界收到来自非安全世界的消息，可能是恶意的，应该保持对消息的认证和安全校验。如何认证消息和鉴权消息？</li>
+<li>CPU的状态要么是安全的，要么是非安全的？那么安全TEE是如何运行的？arm建议的一个可行的方案是，在非安全世界运行一个daemon，该daemon通过API控制SM，并控制TEE的运行。这个方案的缺点时可能导致可用性存在风险，但是不会产生信息泄露。</li>
+</ul>
+<h3 id="内存的安全状态和非安全状态划分">1.3
+内存的安全状态和非安全状态划分</h3>
+<p>内存访问有两种方式分段和分页，也可以是两者的结合。在linux中采用了分页内存管理机制，在Linux分页机制中存在如下集中变量，PGD（page
+global Directory)、PUD(page upper Directory)、PMD(page middle
+Directory)和PTE(page
+table)。内存MMU通过输入的虚拟地址，通过PGD找到PUD，通过PUD找到PMD，让后通过PMD找到PT，最终在PT中找到具体的物理地址。</p>
+<figure>
+<img src="./imgs2/address-translation.png"
+alt="address-translation.png" />
+<figcaption aria-hidden="true">address-translation.png</figcaption>
+</figure>
+<p>在ARM中存在两个寄存器TTBR0和TTBR1用于存放PGD，并通过TTBCR.N控制了系统在执行地址转换时采用那个寄存处，其规则如下：</p>
+<ul>
+<li>TTBCR.N=0,那么系统使用TTBR0</li>
+<li>TTBCR.N不为0，此时如果虚拟地址va[31:32-N]位0，那么系统使用TTBR0，如果va[31:32-N]为1，那么系统使用TTBR1。</li>
+</ul>
+<p>以ARMv7
+32为例，地址转换采用了2段寻址，其中分配位12+8+12的组合，即PUD的大小为1，PMD的大小位4096，PTE的大小位256，内存page的大小位4k（4096）。</p>
+<p>因此地址转换如下图所示，转换的步骤如下：</p>
+<ul>
+<li>从TTBRx基础获得translation base
+address地址14-31bit位(即PGD），转换地址的低14bit位为0，这个值+va[31:20]定位到page
+table地址</li>
+<li>获得page table地址+va[19:12]得到PTE，PTE里面存放了物理地址PA</li>
+<li>获得PA+va[11:0]得到真实的物理地址。</li>
+</ul>
+<p><img title="" src="./imgs/arm-address-translation.drawio.png" alt="arm-address-translation.drawio.png" width="739"></p>
+<p>那么在安全状态和非安全状态，内存是如何隔离的？</p>
+<p>ARM提供了机制可以将内存分位安全区域和非安全区域。在TTBR0寄存器中存在标志位确定当前基地址时安全的还非安全。其次指向page
+table的地址中也NS标志位，当NS标志位0表明引用的安全区域内存。</p>
+<p>根据规则，安全状态下也可以方位安全和非安全的内存；但是在非安全状态下，只能访问非安全的内存。如果非安全访问安全的内存，会导致fault。</p>
+<p>需要注意的是，在安全状态和非安全状态下，TTBR0、TTBR1、TTBCR等寄存器是独立的，即物理上一份，但是两种状态有各自的值。</p>
+<p>对于内存划分不同的安全状态，通过TZASC（trustzone address space
+control）来实现。TZASC类似MPU（memory protect
+unit）决定内存的访问权限。</p>
+<figure>
+<img src="./imgs/arm-tzasc.png" alt="arm-tzasc.png" />
+<figcaption aria-hidden="true">arm-tzasc.png</figcaption>
+</figure>
+<p>参考：</p>
+<p>http://developer.arm.com/documentation/102418/latest/</p>
+<h3 id="tee-软件架构">1.4 TEE 软件架构</h3>
+<figure>
+<img src="./imgs2/optee-os-ta-software-arch.png"
+alt="optee-os-ta-software-arch.png" />
+<figcaption
+aria-hidden="true">optee-os-ta-software-arch.png</figcaption>
+</figure>
+<p>Trusted Application(TA)需要实现如下的接口：</p>
+<ul>
+<li><p>TEE_Result TA_EXPORT <strong>TA_CreateEntryPoint</strong>( void
+);</p></li>
+<li><p>void TA_EXPORT <strong>TA_DestroyEntryPoint</strong>( void
+);</p></li>
+<li><p>TEE_Result TA_EXPORT
+<strong>TA_OpenSessionEntryPoint</strong>(<br />
+uint32_t paramTypes,<br />
+[inout] TEE_Param params[4],<br />
+[out][ctx] void** sessionContext );</p></li>
+<li><p>void TA_EXPORT <strong>TA_CloseSessionEntryPoint</strong>(<br />
+[ctx] void* sessionContext);</p></li>
+<li><p>TEE_Result TA_EXPORT
+<strong>TA_InvokeCommandEntryPoint</strong>(<br />
+[ctx] void* sessionContext,<br />
+uint32_t commandID,<br />
+uint32_t paramTypes,<br />
+[inout] TEE_Param params[4] );</p></li>
+</ul>
+<p>TA实现TA
+Interface，但是可以调用接口，如TEE_CipherInit、TEE_CipherUpdate和TEE_CipherDoFinal来请求Trusted
+OS执行TEE服务。</p>
+<p>以TEE_CipherDoFinal为例，最终会调用系统调用接口_utee_cipher_final请求TrustedOS服务。其syscall定义如下：</p>
+<blockquote>
+<p>UTEE_SYSCALL _utee_cipher_final, TEE_SCN_CIPHER_FINAL, 5</p>
+</blockquote>
+<p>参考：</p>
+<p><a href="https://github.com/OP-TEE/">OP-TEE · GitHub</a></p>
+<p><a
+href="https://developer.arm.com/documentation/102418/0101/Software-architecture">Documentation
+– Arm Developer-ARM TrustZone</a></p>
+<p><a
+href="https://globalplatform.org/specs-library/tee-internal-core-api-specification/#">TEE
+Internal Core API Specification v1.3.1 | GPD_SPE_010</a></p>
+<h2 id="op-tee架构">2. OP-TEE架构</h2>
+<figure>
+<img src="./imgs2/op-tee-study.drawio.png"
+alt="op-tee-study.drawio.png" />
+<figcaption aria-hidden="true">op-tee-study.drawio.png</figcaption>
+</figure>
+<p>通过对代码分析op-tee实现的架构，理清楚安全世界（normal
+world)和安全世界（secure
+world）是如何进行交互的。我们从如下4个方面入手：</p>
+<ul>
+<li><p>在normal世界用户态空间的APP是如何请求TA服务器的？</p></li>
+<li><p>在normal world中，内核driver是如何工作的？</p></li>
+<li><p>内核是如何陷入SM（secure Monitor）或者ATF中的？</p></li>
+<li><p>ATF如何将请求传递给op-tee OS，并且触发TA进行服务</p></li>
+<li><p>TA完成任务后，如何进行返回。</p></li>
+</ul>
+<p>其次，安全世界和非安全世界如何进行消息交互的。</p>
+<p>为了更好的理解，我们先了解op-tee
+driver架构，然后学习libtee.so的实现，最后深入op-tee
+OS学习TA的管理机制，并同时研究libutee.so的实现。</p>
+<h2 id="op-tee-driver-架构">3.op-tee driver 架构</h2>
+<p>tee驱动架构已集成到linux版本中，我们选择linux-5.11.17版本</p>
+<p>op-tee
+driver架构可以分层2个部分，一个是面向linux-kernel接口，完成用户态请求（syscall调用）即注册file_operations实现;
+另一个是面向ATF/SM，实现将请求传递到安全世界，通过注册tee_driver_ops接口实现。</p>
+<figure>
+<img src="./imgs2/op-tee-study-Page-2.drawio.png"
+alt="op-tee-study-Page-2.drawio.png" />
+<figcaption
+aria-hidden="true">op-tee-study-Page-2.drawio.png</figcaption>
+</figure>
+<p>内核驱动会初始化2类驱动，一个为普通的APP使用，另一个则是为suppliant使用。</p>
+<p>该初始化可以在optee_probe函数函数中定义实现。调用关系如下：</p>
+<figure>
+<img src="./imgs2/op-tee-study-Page-3.drawio.png"
+alt="op-tee-study-Page-3.drawio.png" />
+<figcaption
+aria-hidden="true">op-tee-study-Page-3.drawio.png</figcaption>
+</figure>
+<p>进一步分析可以得到，普通驱动对应到文件/dev/optee-clnt，而suppliant使用的驱动文件为/dev/optee-supp;因此可以通过open()，ioctrl和close来触发驱动代码逻辑执行。</p>
+<p>optee-clnt定义如下：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> <span class="kw">struct</span> tee_driver_ops optee_ops <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>get_version <span class="op">=</span> optee_get_version<span class="op">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>open <span class="op">=</span> optee_open<span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>release <span class="op">=</span> optee_release<span class="op">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>open_session <span class="op">=</span> optee_open_session<span class="op">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>close_session <span class="op">=</span> optee_close_session<span class="op">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>invoke_func <span class="op">=</span> optee_invoke_func<span class="op">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>cancel_req <span class="op">=</span> optee_cancel_req<span class="op">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>shm_register <span class="op">=</span> optee_shm_register<span class="op">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>shm_unregister <span class="op">=</span> optee_shm_unregister<span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> <span class="kw">struct</span> tee_desc optee_desc <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>name <span class="op">=</span> DRIVER_NAME <span class="st">&quot;-clnt&quot;</span><span class="op">,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>ops <span class="op">=</span> <span class="op">&amp;</span>optee_ops<span class="op">,</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>owner <span class="op">=</span> THIS_MODULE<span class="op">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>optee-supp定义如下：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> <span class="kw">struct</span> tee_driver_ops optee_supp_ops <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>get_version <span class="op">=</span> optee_get_version<span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>open <span class="op">=</span> optee_open<span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>release <span class="op">=</span> optee_release<span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>supp_recv <span class="op">=</span> optee_supp_recv<span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>supp_send <span class="op">=</span> optee_supp_send<span class="op">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>shm_register <span class="op">=</span> optee_shm_register_supp<span class="op">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>shm_unregister <span class="op">=</span> optee_shm_unregister_supp<span class="op">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> <span class="kw">struct</span> tee_desc optee_supp_desc <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>name <span class="op">=</span> DRIVER_NAME <span class="st">&quot;-supp&quot;</span><span class="op">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>ops <span class="op">=</span> <span class="op">&amp;</span>optee_supp_ops<span class="op">,</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>owner <span class="op">=</span> THIS_MODULE<span class="op">,</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>flags <span class="op">=</span> TEE_DESC_PRIVILEGED<span class="op">,</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>ioctl代码逻辑</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">long</span> tee_ioctl<span class="op">(</span><span class="kw">struct</span> file <span class="op">*</span>filp<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">int</span> cmd<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">long</span> arg<span class="op">)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> tee_context <span class="op">*</span>ctx <span class="op">=</span> filp<span class="op">-&gt;</span>private_data<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> __user <span class="op">*</span>uarg <span class="op">=</span> <span class="op">(</span><span class="dt">void</span> __user <span class="op">*)</span>arg<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span> <span class="op">(</span>cmd<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_VERSION<span class="op">:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_version<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_SHM_ALLOC<span class="op">:</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_shm_alloc<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_SHM_REGISTER<span class="op">:</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_shm_register<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_OPEN_SESSION<span class="op">:</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_open_session<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_INVOKE<span class="op">:</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_invoke<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_CANCEL<span class="op">:</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_cancel<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_CLOSE_SESSION<span class="op">:</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_close_session<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_SUPPL_RECV<span class="op">:</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_supp_recv<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TEE_IOC_SUPPL_SEND<span class="op">:</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tee_ioctl_supp_send<span class="op">(</span>ctx<span class="op">,</span> uarg<span class="op">);</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span>EINVAL<span class="op">;</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>还存在一个问题，linux kernel是如何陷入到ATF/SM中的。</p>
+<p>以tee_ioctl_open_session为例，分析得到如下的调用关系：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> tee_ioctl_open_session<span class="op">(</span><span class="kw">struct</span> tee_context <span class="op">*</span>ctx<span class="op">,</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                  <span class="kw">struct</span> tee_ioctl_buf_data __user <span class="op">*</span>ubuf<span class="op">))</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>rc <span class="op">=</span> ctx<span class="op">-&gt;</span>teedev<span class="op">-&gt;</span>desc<span class="op">-&gt;</span>ops<span class="op">-&gt;</span>open_session<span class="op">(</span>ctx<span class="op">,</span> <span class="op">&amp;</span>arg<span class="op">,</span> params<span class="op">);</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="er">#这里会触发optee_ops-&gt;.open_session = optee_open_session的调用</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>optee_do_call_with_arg<span class="op">(</span>ctx<span class="op">,</span> msg_parg<span class="op">)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>optee<span class="op">-&gt;</span>invoke_fn<span class="op">(</span>param<span class="op">.</span>a0<span class="op">,</span> param<span class="op">.</span>a1<span class="op">,</span> param<span class="op">.</span>a2<span class="op">,</span> param<span class="op">.</span>a3<span class="op">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                 param<span class="op">.</span>a4<span class="op">,</span> param<span class="op">.</span>a5<span class="op">,</span> param<span class="op">.</span>a6<span class="op">,</span> param<span class="op">.</span>a7<span class="op">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                 <span class="op">&amp;</span>res<span class="op">);</span>#其中invoke_fn或者为optee_smccc_smc或者optee_smccc_hvc。</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span><span class="dt">static</span> <span class="dt">void</span> optee_smccc_smc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> a0<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">long</span> a1<span class="op">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                <span class="dt">unsigned</span> <span class="dt">long</span> a2<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">long</span> a3<span class="op">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                <span class="dt">unsigned</span> <span class="dt">long</span> a4<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">long</span> a5<span class="op">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                <span class="dt">unsigned</span> <span class="dt">long</span> a6<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">long</span> a7<span class="op">,</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                <span class="kw">struct</span> arm_smccc_res <span class="op">*</span>res<span class="op">)</span>；</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>arm_smccc_smc<span class="op">(</span>a0<span class="op">,</span> a1<span class="op">,</span> a2<span class="op">,</span> a3<span class="op">,</span> a4<span class="op">,</span> a5<span class="op">,</span> a6<span class="op">,</span> a7<span class="op">,</span> res<span class="op">);</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>smc #<span class="dv">0</span></span></code></pre></div>
+<p>其中，arm_smccc_smc的定义如下</p>
+<blockquote>
+<p>#define arm_smccc_smc(…) __arm_smccc_smc(<strong>VA_ARGS</strong>,
+NULL)</p>
+</blockquote>
+<p>详细定义如下所示：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">     * Wrap c macros in asm macros to delay expansion until after the</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">     * SMCCC asm macro is expanded.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">     */</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>macro SMCCC_SMC</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    __SMC<span class="op">(</span><span class="dv">0</span><span class="op">)</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>endm</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>macro SMCCC_HVC</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    __HVC<span class="op">(</span><span class="dv">0</span><span class="op">)</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>endm</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>macro SMCCC instr</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>UNWIND<span class="op">(</span>    <span class="op">.</span>fnstart<span class="op">)</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    mov    r12<span class="op">,</span> sp</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    push    <span class="op">{</span>r4<span class="op">-</span>r7<span class="op">}</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>UNWIND<span class="op">(</span>    <span class="op">.</span>save    <span class="op">{</span>r4<span class="op">-</span>r7<span class="op">})</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    ldm    r12<span class="op">,</span> <span class="op">{</span>r4<span class="op">-</span>r7<span class="op">}</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    \instr</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    pop    <span class="op">{</span>r4<span class="op">-</span>r7<span class="op">}</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    ldr    r12<span class="op">,</span> <span class="op">[</span>sp<span class="op">,</span> #<span class="op">(</span><span class="dv">4</span> <span class="op">*</span> <span class="dv">4</span><span class="op">)]</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    stm    r12<span class="op">,</span> <span class="op">{</span>r0<span class="op">-</span>r3<span class="op">}</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    bx    lr</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>UNWIND<span class="op">(</span>    <span class="op">.</span>fnend<span class="op">)</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>endm</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co"> * void smccc_smc(unsigned long a0, unsigned long a1, unsigned long a2,</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co"> *          unsigned long a3, unsigned long a4, unsigned long a5,</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="co"> *          unsigned long a6, unsigned long a7, struct arm_smccc_res *res,</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co"> *          struct arm_smccc_quirk *quirk)</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>ENTRY<span class="op">(</span>__arm_smccc_smc<span class="op">)</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    SMCCC SMCCC_SMC</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>ENDPROC<span class="op">(</span>__arm_smccc_smc<span class="op">)</span></span></code></pre></div>
+<p>arm-32定义__SMC (0)</p>
+<p>#define __SMC(imm4) __inst_arm_thumb32(                <br />
+</p>
+<p>    0xE1600070 | (((imm4) &amp; 0xF) &lt;&lt; 0),            <br />
+</p>
+<p>    0xF7F08000 | (((imm4) &amp; 0xF) &lt;&lt; 16)            <br />
+</p>
+<p>)</p>
+<p>arm64定义如下：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>SYM_FUNC_START<span class="op">(</span>__arm_smccc_smc<span class="op">)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    SMCCC    smc</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>SYM_FUNC_END<span class="op">(</span>__arm_smccc_smc<span class="op">)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>EXPORT_SYMBOL<span class="op">(</span>__arm_smccc_smc<span class="op">)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>macro SMCCC instr</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    \instr    #<span class="dv">0</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    ldr    x4<span class="op">,</span> <span class="op">[</span>sp<span class="op">]</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    stp    x0<span class="op">,</span> x1<span class="op">,</span> <span class="op">[</span>x4<span class="op">,</span> #ARM_SMCCC_RES_X0_OFFS<span class="op">]</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    stp    x2<span class="op">,</span> x3<span class="op">,</span> <span class="op">[</span>x4<span class="op">,</span> #ARM_SMCCC_RES_X2_OFFS<span class="op">]</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    ldr    x4<span class="op">,</span> <span class="op">[</span>sp<span class="op">,</span> #<span class="dv">8</span><span class="op">]</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    cbz    x4<span class="op">,</span> <span class="dv">1</span><span class="er">f</span> <span class="co">/* no quirk structure */</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    ldr    x9<span class="op">,</span> <span class="op">[</span>x4<span class="op">,</span> #ARM_SMCCC_QUIRK_ID_OFFS<span class="op">]</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    cmp    x9<span class="op">,</span> #ARM_SMCCC_QUIRK_QCOM_A6</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    b<span class="op">.</span>ne    <span class="dv">1</span><span class="er">f</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    str    x6<span class="op">,</span> <span class="op">[</span>x4<span class="op">,</span> ARM_SMCCC_QUIRK_STATE_OFFS<span class="op">]</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="op">:</span>    ret</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>endm</span></code></pre></div>
+<p>arm64直接调用smc指令</p>
+<h2 id="tee-client软件架构">4. TEE Client软件架构</h2>
+<p>libtee.so 实现了TEE定义的Client
+API接口，所有的实现方式最终都通过调用tee-driver的ioctl接口来实现：</p>
+<p><strong>TEEC_InitializeContext</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>TEEC_Result TEEC_InitializeContext<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>name<span class="op">,</span> TEEC_Context <span class="op">*</span>ctx<span class="op">)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>fd <span class="op">=</span> teec_open_dev<span class="op">(</span>devname<span class="op">,</span> name<span class="op">,</span> <span class="op">&amp;</span>gen_caps<span class="op">);</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>fd <span class="op">=</span> open<span class="op">(</span>devname<span class="op">,</span> O_RDWR<span class="op">);</span></span></code></pre></div>
+<p><strong>TEEC_FinalizeContext</strong></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> TEEC_FinalizeContext<span class="op">(</span>TEEC_Context <span class="op">*</span>ctx<span class="op">)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>close<span class="op">(</span>ctx<span class="op">-&gt;</span>fd<span class="op">);</span></span></code></pre></div>
+<p><strong>TEEC_OpenSession</strong></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>TEEC_Result TEEC_OpenSession<span class="op">(</span>TEEC_Context <span class="op">*</span>ctx<span class="op">,</span> TEEC_Session <span class="op">*</span>session<span class="op">,</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>            <span class="dt">const</span> TEEC_UUID <span class="op">*</span>destination<span class="op">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>            <span class="dt">uint32_t</span> connection_method<span class="op">,</span> <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>connection_data<span class="op">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>            TEEC_Operation <span class="op">*</span>operation<span class="op">,</span> <span class="dt">uint32_t</span> <span class="op">*</span>ret_origin<span class="op">)</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>rc <span class="op">=</span> ioctl<span class="op">(</span>ctx<span class="op">-&gt;</span>fd<span class="op">,</span> TEE_IOC_OPEN_SESSION<span class="op">,</span> <span class="op">&amp;</span>buf_data<span class="op">);</span></span></code></pre></div>
+<p><strong>TEEC_CloseSession</strong></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> TEEC_CloseSession<span class="op">(</span>TEEC_Session <span class="op">*</span>session<span class="op">)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>ioctl<span class="op">(</span>session<span class="op">-&gt;</span>ctx<span class="op">-&gt;</span>fd<span class="op">,</span> TEE_IOC_CLOSE_SESSION<span class="op">,</span> <span class="op">&amp;</span>arg<span class="op">)</span></span></code></pre></div>
+<p><strong>TEEC_InvokeCommand</strong></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>TEEC_Result TEEC_InvokeCommand<span class="op">(</span>TEEC_Session <span class="op">*</span>session<span class="op">,</span> <span class="dt">uint32_t</span> cmd_id<span class="op">,</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>            TEEC_Operation <span class="op">*</span>operation<span class="op">,</span> <span class="dt">uint32_t</span> <span class="op">*</span>error_origin<span class="op">)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>rc <span class="op">=</span> ioctl<span class="op">(</span>session<span class="op">-&gt;</span>ctx<span class="op">-&gt;</span>fd<span class="op">,</span> TEE_IOC_INVOKE<span class="op">,</span> <span class="op">&amp;</span>buf_data<span class="op">);</span></span></code></pre></div>
+<p><strong>TEEC_RequestCancellation</strong></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> TEEC_RequestCancellation<span class="op">(</span>TEEC_Operation <span class="op">*</span>operation<span class="op">)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>ioctl<span class="op">(</span>session<span class="op">-&gt;</span>ctx<span class="op">-&gt;</span>fd<span class="op">,</span> TEE_IOC_CANCEL<span class="op">,</span> <span class="op">&amp;</span>arg<span class="op">)</span></span></code></pre></div>
+<p><strong>TEEC_RegisterSharedMemory</strong></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>TEEC_Result TEEC_RegisterSharedMemory<span class="op">(</span>TEEC_Context <span class="op">*</span>ctx<span class="op">,</span> TEEC_SharedMemory <span class="op">*</span>shm<span class="op">)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>fd <span class="op">=</span> teec_shm_register<span class="op">(</span>ctx<span class="op">-&gt;</span>fd<span class="op">,</span> shm<span class="op">-&gt;</span>shadow_buffer<span class="op">,</span> s<span class="op">,</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                       <span class="op">&amp;</span>shm<span class="op">-&gt;</span>id<span class="op">);</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>shm_fd <span class="op">=</span> ioctl<span class="op">(</span>fd<span class="op">,</span> TEE_IOC_SHM_REGISTER<span class="op">,</span> <span class="op">&amp;</span>data<span class="op">);</span></span></code></pre></div>
+<p>1、通常请求下，TEEC_OpenSession请求会触发TEEC_InitializeContext接口的调用</p>
+<p>2、TA的client
+除了有normal世界的Application外，TA直接也可以进行服务请求。TA调用TA请求的API接口定义如下：</p>
+<ul>
+<li><p>TEE_OpenTASession</p></li>
+<li><p>TEE_InvokeTACommand</p></li>
+<li><p>TEE_CloseTASession</p></li>
+</ul>
+<p>本次不分析TA之间的服务请求。</p>
+<h2 id="smc指令">5.SMC指令</h2>
+<p>SMC（Secure Monitor
+Call）用于在安全世界和非安全世界进行切换，SMC会根据当前的上下文安全状态，比如
+NS位，来确定切换方向（安全-&gt;非安全，或者非安全-&gt;安全）。调用SMC指令后，系统会进入ATF或者secure
+monitor进行状态切换，即在非安全世界调用SMC指令会进入ATF/SM</p>
+<p>以32位的为例，SMC32位的调用规范：</p>
+<ul>
+<li><p>r0存放functionID</p></li>
+<li><p>r1-r7存放参数</p></li>
+<li><p>返回结果存放在r0-r7</p></li>
+<li><p>r4和r7必须被保存，除非用于保存结果</p></li>
+<li><p>r8-r14 需要通过被调用函数保存</p></li>
+</ul>
+<p>SMC32 在64位系统上的调用规范：</p>
+<ul>
+<li><p>w0存放functionID</p></li>
+<li><p>w1-w7存放参数</p></li>
+<li><p>返回结果存放在w0-w7</p></li>
+<li><p>w4和w7必须被保存，除非用于保存结果</p></li>
+<li><p>x8-x30,SP_EL0,SP_ELx 需要通过被调用函数保存</p></li>
+</ul>
+<p>SMC的function功能ID</p>
+<table>
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 54%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>TEESMC_OPTEED_RETURN_ENTRY_DONE</td>
+<td>returning from initial entry：用于注册消息处理函数</td>
+</tr>
+<tr class="even">
+<td>TEESMC_OPTEED_RETURN_ON_DONE</td>
+<td>returning from “cpu_on” vector</td>
+</tr>
+<tr class="odd">
+<td>TEESMC_OPTEED_RETURN_OFF_DONE</td>
+<td>returning from “cpu_off” vector</td>
+</tr>
+<tr class="even">
+<td>TEESMC_OPTEED_RETURN_SUSPEND_DONE</td>
+<td>returning from “cpu_suspend” vector</td>
+</tr>
+<tr class="odd">
+<td>TEESMC_OPTEED_RETURN_RESUME_DONE</td>
+<td>returning from “cpu_resume” vector</td>
+</tr>
+<tr class="even">
+<td>TEESMC_OPTEED_RETURN_CALL_DONE</td>
+<td>returning from “std_smc” or “fast_smc” vector</td>
+</tr>
+<tr class="odd">
+<td>TEESMC_OPTEED_RETURN_FIQ_DONE</td>
+<td>returning from “fiq” vector</td>
+</tr>
+<tr class="even">
+<td>TEESMC_OPTEED_RETURN_SYSTEM_OFF_DONE</td>
+<td>returning from “system_off” vector</td>
+</tr>
+<tr class="odd">
+<td>TEESMC_OPTEED_RETURN_SYSTEM_RESET_DONE</td>
+<td>returning from “system_reset” vector</td>
+</tr>
+</tbody>
+</table>
+<p>更多详细内容，可以参考《DEN0028E_SMC_Calling_Convention_1_4bet1.pdf》</p>
+<h2 id="atf切换到optee-os">6.ATF切换到optee-OS</h2>
+<h3 id="消息处理函数注册分析">6.1消息处理函数注册分析</h3>
+<p>通过SMC的FunctionID可知，TEESMC_OPTEED_RETURN_ENTRY_DONE用于在初始时向ATF注册消息处理函数向量表，即thread_vector_table。</p>
+<p>其初始流程如下(以32位为例）：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode s"><code class="sourceCode gnuassembler"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>_start</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>reset_primary    </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>ldr    r1<span class="op">,</span> <span class="op">=</span>thread_vector_table</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>mov    r0<span class="op">,</span> <span class="co">#TEESMC_OPTEED_RETURN_ENTRY_DONE</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="op">-&gt;</span>smc    <span class="co">#0</span></span></code></pre></div>
+<p>thread_vector_table的定义如下：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> thread_vector_table <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> std_smc_entry<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> fast_smc_entry<span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> cpu_on_entry<span class="op">;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> cpu_off_entry<span class="op">;</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> cpu_resume_entry<span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> cpu_suspend_entry<span class="op">;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> fiq_entry<span class="op">;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> system_off_entry<span class="op">;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> system_reset_entry<span class="op">;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="kw">struct</span> thread_vector_table thread_vector_table<span class="op">;</span></span></code></pre></div>
+<p>初始在core_optee_smc_a32.S进行了初始化</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>FUNC thread_vector_table <span class="op">,</span> <span class="op">:</span> <span class="op">,</span> <span class="op">.</span>identity_map</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>UNWIND<span class="op">(</span>    <span class="op">.</span>cantunwind<span class="op">)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    b    vector_std_smc_entry</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    b    vector_fast_smc_entry</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    b    vector_cpu_on_entry</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    b    vector_cpu_off_entry</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    b    vector_cpu_resume_entry</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    b    vector_cpu_suspend_entry</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    b    vector_fiq_entry</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    b    vector_system_off_entry</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    b    vector_system_reset_entry</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>END_FUNC thread_vector_table</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>DECLARE_KEEP_PAGER thread_vector_table</span></code></pre></div>
+<p>因此在ATF中处理标准smc请求，最终会调用vector_std_smc_entry进行处理，接下来分析该函数的处理逻辑和optee-os内部的函数流程。</p>
+<h3
+id="vector_std_smc_entry函数分析">6.2vector_std_smc_entry函数分析</h3>
+<p>函数主体：</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>FUNC vector_std_smc_entry <span class="op">,</span> <span class="op">:</span> <span class="op">,</span> <span class="op">.</span>identity_map</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>UNWIND<span class="op">(</span>    <span class="op">.</span>cantunwind<span class="op">)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    readjust_pc</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    push    <span class="op">{</span>r4<span class="op">-</span>r7<span class="op">}</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    bl    thread_handle_std_smc</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    add    sp<span class="op">,</span> sp<span class="op">,</span> #<span class="op">(</span><span class="dv">4</span> <span class="op">*</span> <span class="dv">4</span><span class="op">)</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">     * Normally thread_handle_std_smc() should return via</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">     * thread_exit(), thread_rpc(), but if thread_handle_std_smc()</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">     * hasn&#39;t switched stack (error detected) it will do a normal &quot;C&quot;</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">     * return.</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">     */</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    mov    r1<span class="op">,</span> r0</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    ldr    r0<span class="op">,</span> <span class="op">=</span>TEESMC_OPTEED_RETURN_CALL_DONE</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    smc    #<span class="dv">0</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* SMC should not return */</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    panic_at_smc_return</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>END_FUNC vector_std_smc_entry</span></code></pre></div>
+<p>主要逻辑如下：</p>
+<p>1、arm32使用r0-r3进行参数传递，超过部分通过stack进行传递，但是SMC通过寄存器进行参数传递，因此需要将其他参数加入到stack中</p>
+<p>2、调用thread_handle_std_smc进行消息处理。</p>
+<p>3、将返回值保存到r1，因为r0需要保存smc的functionID</p>
+<p>4、设置r0的functionID为TEESMC_OPTEED_RETURN_CALL_DONE，表明已完成消息处理了</p>
+<p>5、执行smc，返回到非安全世界。</p>
+<p>thread_handle_std_smc有两个功能：</p>
+<ul>
+<li><p>调用函数thread_alloc_and_run为新的TEE
+TA服务请求选择thread，设置相应的register，并指定pc为thread_std_smc_entry。thread的数量可配置为1,4,8或者16。当没有空闲的thread时，系统返回OPTEE_SMC_RETURN_ETHREAD_LIMIT。</p></li>
+<li><p>调用thread_resume_from_rpc恢复已有的TEE
+TA服务请求。这里不需要初始化thread.regs, 更不用设置pc。</p></li>
+</ul>
+<p>不管是处理新请求，还是恢复老请求，最后都通过thread_resume完成thread执行环境恢复。</p>
+<p>thread_handle_std_smc比较特殊，如果它调用函数失败，从该函数return。否则会从函数thread_exit()或者thread_rpc()返回。</p>
+<figure>
+<img src="./imgs2/op-tee-study-Page-4.drawio.png"
+alt="op-tee-study-Page-4.drawio.png" />
+<figcaption
+aria-hidden="true">op-tee-study-Page-4.drawio.png</figcaption>
+</figure>
+<p>init_regs函数的逻辑比较简单，初始化thread的寄存器，并设置cpsr（当前处理状态寄存器的值）</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> init_regs<span class="op">(</span><span class="kw">struct</span> thread_ctx <span class="op">*</span>thread<span class="op">,</span> <span class="dt">uint32_t</span> a0<span class="op">,</span> <span class="dt">uint32_t</span> a1<span class="op">,</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>              <span class="dt">uint32_t</span> a2<span class="op">,</span> <span class="dt">uint32_t</span> a3<span class="op">,</span> <span class="dt">uint32_t</span> a4<span class="op">,</span> <span class="dt">uint32_t</span> a5<span class="op">,</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>              <span class="dt">uint32_t</span> a6<span class="op">,</span> <span class="dt">uint32_t</span> a7<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>pc<span class="op">)</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>pc <span class="op">=</span> <span class="op">(</span><span class="dt">uint32_t</span><span class="op">)</span>pc<span class="op">;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">     * Stdcalls starts in SVC mode with masked foreign interrupts, masked</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">     * Asynchronous abort and unmasked native interrupts.</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co">     */</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>cpsr <span class="op">=</span> read_cpsr<span class="op">()</span> <span class="op">&amp;</span> ARM32_CPSR_E<span class="op">;</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>cpsr <span class="op">|=</span> CPSR_MODE_SVC <span class="op">|</span> CPSR_A <span class="op">|</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>THREAD_EXCP_FOREIGN_INTR <span class="op">&lt;&lt;</span> ARM32_CPSR_F_SHIFT<span class="op">);</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Enable thumb mode if it&#39;s a thumb instruction */</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>thread<span class="op">-&gt;</span>regs<span class="op">.</span>pc <span class="op">&amp;</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        thread<span class="op">-&gt;</span>regs<span class="op">.</span>cpsr <span class="op">|=</span> CPSR_T<span class="op">;</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Reinitialize stack pointer */</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>svc_sp <span class="op">=</span> thread<span class="op">-&gt;</span>stack_va_end<span class="op">;</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co">     * Copy arguments into context. This will make the</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="co">     * arguments appear in r0-r7 when thread is started.</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="co">     */</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>r0 <span class="op">=</span> a0<span class="op">;</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>r1 <span class="op">=</span> a1<span class="op">;</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>r2 <span class="op">=</span> a2<span class="op">;</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>r3 <span class="op">=</span> a3<span class="op">;</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>r4 <span class="op">=</span> a4<span class="op">;</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>r5 <span class="op">=</span> a5<span class="op">;</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>r6 <span class="op">=</span> a6<span class="op">;</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    thread<span class="op">-&gt;</span>regs<span class="op">.</span>r7 <span class="op">=</span> a7<span class="op">;</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="thread_resume函数分析">6.3thread_resume函数分析</h3>
+<p>还是以32位为例（core_a32.S）</p>
+<p>在分析thread_resume之前，先看下thread_ctx和thread_ctx_regs定义</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> thread_ctx <span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> thread_ctx_regs regs<span class="op">;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">enum</span> thread_state state<span class="op">;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    vaddr_t stack_va_end<span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> flags<span class="op">;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> core_mmu_user_map user_map<span class="op">;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> have_user_map<span class="op">;</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifdef ARM64</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    vaddr_t kern_sp<span class="op">;</span>    <span class="co">/* Saved kernel SP during user TA execution */</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifdef CFG_WITH_VFP</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> thread_vfp_state vfp_state<span class="op">;</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>rpc_arg<span class="op">;</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> mobj <span class="op">*</span>rpc_mobj<span class="op">;</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> thread_shm_cache shm_cache<span class="op">;</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> thread_specific_data tsd<span class="op">;</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>暂时只关心regs，其定义如下：</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> thread_ctx_regs <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r0<span class="op">;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r1<span class="op">;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r2<span class="op">;</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r3<span class="op">;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r4<span class="op">;</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r5<span class="op">;</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r6<span class="op">;</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r7<span class="op">;</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r8<span class="op">;</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r9<span class="op">;</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r10<span class="op">;</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r11<span class="op">;</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> r12<span class="op">;</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> usr_sp<span class="op">;</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> usr_lr<span class="op">;</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> svc_spsr<span class="op">;</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> svc_sp<span class="op">;</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> svc_lr<span class="op">;</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> pc<span class="op">;</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> cpsr<span class="op">;</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>thread_resume代码如下：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* void thread_resume(struct thread_ctx_regs *regs) */</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>FUNC thread_resume <span class="op">,</span> <span class="op">:</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>UNWIND<span class="op">(</span>    <span class="op">.</span>cantunwind<span class="op">)</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    add    r12<span class="op">,</span> r0<span class="op">,</span> #<span class="op">(</span><span class="dv">13</span> <span class="op">*</span> <span class="dv">4</span><span class="op">)</span>    <span class="co">/* Restore registers r0-r12 later */</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    cps    #CPSR_MODE_SYS</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    ldr    sp<span class="op">,</span> <span class="op">[</span>r12<span class="op">],</span> #<span class="dv">4</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    ldr    lr<span class="op">,</span> <span class="op">[</span>r12<span class="op">],</span> #<span class="dv">4</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    cps    #CPSR_MODE_SVC</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    ldr    r1<span class="op">,</span> <span class="op">[</span>r12<span class="op">],</span> #<span class="dv">4</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    ldr    sp<span class="op">,</span> <span class="op">[</span>r12<span class="op">],</span> #<span class="dv">4</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    ldr    lr<span class="op">,</span> <span class="op">[</span>r12<span class="op">],</span> #<span class="dv">4</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    msr    spsr_fsxc<span class="op">,</span> r1</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    ldm    r12<span class="op">,</span> <span class="op">{</span>r1<span class="op">,</span> r2<span class="op">}</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="co">     * Switching to some other mode than SVC as we need to set spsr in</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co">     * order to return into the old state properly and it may be SVC</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="co">     * mode we&#39;re returning to.</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co">     */</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    cps    #CPSR_MODE_ABT</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>    cmp_spsr_user_mode r2</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>    mov    lr<span class="op">,</span> r1</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    msr    spsr_fsxc<span class="op">,</span> r2</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    ldm    r0<span class="op">,</span> <span class="op">{</span>r0<span class="op">-</span>r12<span class="op">}</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>    movsne    pc<span class="op">,</span> lr</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>    b    eret_to_user_mode</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>END_FUNC thread_resume</span></code></pre></div>
+<p>函数解析如下：</p>
+<figure>
+<img src="./imgs2/thread_resume2.png" alt="thread_resume.png" />
+<figcaption aria-hidden="true">thread_resume.png</figcaption>
+</figure>
+<p>需要注意：在非sys模式下，会直接通过movsne pc,lr
+切换程序流程；否则会执行eret_to_user_mode，在init_regs函数中，cpsr赋值了CPSR_MODE_SVC，因此对于初始请求任务，会进入eret_to_user_mode进行处理</p>
+<p><em>Note</em>:</p>
+<blockquote>
+<ul>
+<li><p>ldr r1, [r12],
+#4：将r12+4指向的内存内容存放在r1中，并且更新r12=r12+4</p></li>
+<li><p>cps #CPSR_MODE_SYS：cps-change processor
+state，用于改变cpu的状态，CPSR_MODE_SYS=0x1f，是system模式，可以和用户态共享寄存器；SVC模式为supervisor
+call 模式，当有svc call 的时候进入；ABT模式为内存访问异常时进入</p></li>
+<li><p>msr spsr_fsxc,
+r1：将r1中的值存放在spsr_fsxc中，对应的指令mrs,格式为mrs r1,spsr
+将spsr的取值读取到r1中。</p></li>
+<li><p>ldm r12, {r1, r2}：将r12指向的内存内容，存放到r1和r2中</p></li>
+<li><p>cpsr：当前程序状态寄存器，spsr：为备份的程序状态寄存器，可以用他来进行恢复。</p></li>
+</ul>
+</blockquote>
+<h3
+id="eret_to_user_mode和thread_std_smc_entry">6.4eret_to_user_mode和thread_std_smc_entry</h3>
+<p>eret_to_user_mode会进行一些配置后，最后执行movs pc,lr</p>
+<p>此时的lr取值为regs.pc，即为thread_std_smc_entry（定义在core_optee_smc_a32.S）,其最终会调用__tee_entry_std函数</p>
+<p>调用关系如下：</p>
+<blockquote>
+<p>thread_std_smc_entry</p>
+<p>-&gt;__thread_std_smc_entry</p>
+<p>-&gt;std_smc_entry(a0, a1, a2, a3)</p>
+<p>-&gt;std_entry_with_parg</p>
+<p>-&gt;rv = call_entry_std(arg, num_params,
+rpc_arg);#rpc_arg为False</p>
+<p>-&gt;tee_entry_std(arg, num_params)</p>
+<p>-&gt;__tee_entry_std(arg, num_params);</p>
+</blockquote>
+<p>__tee_entry_std是一个中转函数，处理不同类别的请求，定义如下：</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>TEE_Result __tee_entry_std<span class="op">(</span><span class="kw">struct</span> optee_msg_arg <span class="op">*</span>arg<span class="op">,</span> <span class="dt">uint32_t</span> num_params<span class="op">)</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    TEE_Result res <span class="op">=</span> TEE_SUCCESS<span class="op">;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Enable foreign interrupts for STD calls */</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    thread_set_foreign_intr<span class="op">(</span>true<span class="op">);</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span> <span class="op">(</span>arg<span class="op">-&gt;</span>cmd<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> OPTEE_MSG_CMD_OPEN_SESSION<span class="op">:</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        entry_open_session<span class="op">(</span>arg<span class="op">,</span> num_params<span class="op">);</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> OPTEE_MSG_CMD_CLOSE_SESSION<span class="op">:</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        entry_close_session<span class="op">(</span>arg<span class="op">,</span> num_params<span class="op">);</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> OPTEE_MSG_CMD_INVOKE_COMMAND<span class="op">:</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        entry_invoke_command<span class="op">(</span>arg<span class="op">,</span> num_params<span class="op">);</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> OPTEE_MSG_CMD_CANCEL<span class="op">:</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>        entry_cancel<span class="op">(</span>arg<span class="op">,</span> num_params<span class="op">);</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifndef CFG_CORE_FFA</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifdef CFG_CORE_DYN_SHM</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> OPTEE_MSG_CMD_REGISTER_SHM<span class="op">:</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>        register_shm<span class="op">(</span>arg<span class="op">,</span> num_params<span class="op">);</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> OPTEE_MSG_CMD_UNREGISTER_SHM<span class="op">:</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>        unregister_shm<span class="op">(</span>arg<span class="op">,</span> num_params<span class="op">);</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> OPTEE_MSG_CMD_DO_BOTTOM_HALF<span class="op">:</span></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>IS_ENABLED<span class="op">(</span>CFG_CORE_ASYNC_NOTIF<span class="op">))</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>            notif_deliver_event<span class="op">(</span>NOTIF_EVENT_DO_BOTTOM_HALF<span class="op">);</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>            <span class="cf">goto</span> err<span class="op">;</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> OPTEE_MSG_CMD_STOP_ASYNC_NOTIF<span class="op">:</span></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>IS_ENABLED<span class="op">(</span>CFG_CORE_ASYNC_NOTIF<span class="op">))</span></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>            notif_deliver_event<span class="op">(</span>NOTIF_EVENT_STOPPED<span class="op">);</span></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span></span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>            <span class="cf">goto</span> err<span class="op">;</span></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>err<span class="op">:</span></span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>        EMSG<span class="op">(</span><span class="st">&quot;Unknown cmd 0x%x&quot;</span><span class="op">,</span> arg<span class="op">-&gt;</span>cmd<span class="op">);</span></span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>        res <span class="op">=</span> TEE_ERROR_NOT_IMPLEMENTED<span class="op">;</span></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> res<span class="op">;</span></span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>以entry_open_session为例，因为TA请求处理从open_session开始：</p>
+<blockquote>
+<p>static void entry_open_session(struct optee_msg_arg *arg, uint32_t
+num_params)</p>
+<p>-&gt;TEE_Result tee_ta_open_session(TEE_ErrorOrigin *err,</p>
+<p>                   struct tee_ta_session **sess,</p>
+<p>                   struct tee_ta_session_head *open_sessions,</p>
+<p>                   const TEE_UUID *uuid,</p>
+<p>                   const TEE_Identity *clnt_id,</p>
+<p>                   uint32_t cancel_req_to,</p>
+<p>                   struct tee_ta_param *param)</p>
+<p>-&gt;res = tee_ta_init_session(err, open_sessions, uuid,
+&amp;s);#查询TA，如果TA已创建，那么调用查询ta的ctx调用enter_open_session进行处理</p>
+<p>res = ts_ctx-&gt;ops-&gt;enter_open_session(&amp;s-&gt;ts_sess);</p>
+</blockquote>
+<p>在分析enter_open_session之前，我们探索下optee-OS和TA的构成架构。</p>
+<p>首先看下tee_ta_init_session函数，该函数查询顺序有4个：</p>
+<ul>
+<li><p>调用函数tee_ta_init_session_with_context，查询已加载的TA。使用传入的uuid进行遍历tee_ctxes，如果uuid相等，表明查询到。</p></li>
+<li><p>加载的TA 中为找到目标TA，此时会优先查看是否是secure
+partition（在是能secure
+partition的情况下），调用函数stmm_init_session创建或者查询，最终会赋值spc-&gt;ta_ctx.ts_ctx.ops
+= &amp;stmm_sp_ops。这里假定不涉及。</p></li>
+<li><p>不是secure
+partition时，通过函数tee_ta_init_pseudo_ta_session查询persudo
+TA。如果是persudo TA，会创一个ctx，并赋值ctx-&gt;ts_ctx.ops =
+&amp;pseudo_ta_ops。</p></li>
+<li><p>最后通过函数tee_ta_init_user_ta_session查询user TA，user
+TA则是通过suppliant辅助加载到TEE环境中的。这里会调用函数set_ta_ctx_ops(&amp;utc-&gt;ta_ctx)，赋值ctx-&gt;ts_ctx.ops
+=
+&amp;user_ta_ops。因为user_ta还需要通过suppliant辅助进行加载TA二进制文件，此时通过ldelf_load_ldelf来完成，后面在分析TA执行时是会进行分析。</p></li>
+<li><p>user_ta和secure
+partition的场景下，会定义handle_svc，解析用户层函数到optee-OS函数直接的映射关系，即optee-OS的syscall。user_ta为user_ta_handle_svc，secure
+partition为sp_handle_svc，以及spm_handle_svc。</p></li>
+<li><p>对于user-ta场景，通过r7传递syscall
+number，r6传递最大参数值</p></li>
+</ul>
+<p>_Note：secure partition和user ta都是可以选择支持的__</p>
+<p>所有的ta_ctx和ta_session都是已如下的方式进组织：</p>
+<figure>
+<img src="./imgs2/op-tee-study-Page-6.drawio.png"
+alt="op-tee-study-Page-6.drawio.png" />
+<figcaption
+aria-hidden="true">op-tee-study-Page-6.drawio.png</figcaption>
+</figure>
+<p>假定我们的请求是user-ta场景，那么此时ts_ctx-&gt;ops-&gt;enter_open_session指向user_ta_ops.enter_open_session
+= user_ta_enter_open_session.</p>
+<p>user_ta_ops定义如下：</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> ts_ops <span class="op">{</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    TEE_Result <span class="op">(*</span>enter_open_session<span class="op">)(</span><span class="kw">struct</span> ts_session <span class="op">*</span>s<span class="op">);</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    TEE_Result <span class="op">(*</span>enter_invoke_cmd<span class="op">)(</span><span class="kw">struct</span> ts_session <span class="op">*</span>s<span class="op">,</span> <span class="dt">uint32_t</span> cmd<span class="op">);</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">(*</span>enter_close_session<span class="op">)(</span><span class="kw">struct</span> ts_session <span class="op">*</span>s<span class="op">);</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">(*</span>dump_state<span class="op">)(</span><span class="kw">struct</span> ts_ctx <span class="op">*</span>ctx<span class="op">);</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">(*</span>dump_ftrace<span class="op">)(</span><span class="kw">struct</span> ts_ctx <span class="op">*</span>ctx<span class="op">);</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">(*</span>destroy<span class="op">)(</span><span class="kw">struct</span> ts_ctx <span class="op">*</span>ctx<span class="op">);</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> <span class="op">(*</span>get_instance_id<span class="op">)(</span><span class="kw">struct</span> ts_ctx <span class="op">*</span>ctx<span class="op">);</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="op">(*</span>handle_svc<span class="op">)(</span><span class="kw">struct</span> thread_svc_regs <span class="op">*</span>regs<span class="op">);</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifdef CFG_TA_GPROF_SUPPORT</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">(*</span>gprof_set_status<span class="op">)(</span><span class="kw">enum</span> ts_gprof_status status<span class="op">);</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>user_ta_ops初始化：</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="kw">struct</span> ts_ops user_ta_ops __weak __relrodata_unpaged<span class="op">(</span><span class="st">&quot;user_ta_ops&quot;</span><span class="op">)</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>enter_open_session <span class="op">=</span> user_ta_enter_open_session<span class="op">,</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>enter_invoke_cmd <span class="op">=</span> user_ta_enter_invoke_cmd<span class="op">,</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>enter_close_session <span class="op">=</span> user_ta_enter_close_session<span class="op">,</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>dump_state <span class="op">=</span> user_ta_dump_state<span class="op">,</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifdef CFG_FTRACE_SUPPORT</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>dump_ftrace <span class="op">=</span> user_ta_dump_ftrace<span class="op">,</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>destroy <span class="op">=</span> user_ta_ctx_destroy<span class="op">,</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>get_instance_id <span class="op">=</span> user_ta_get_instance_id<span class="op">,</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>handle_svc <span class="op">=</span> user_ta_handle_svc<span class="op">,</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifdef CFG_TA_GPROF_SUPPORT</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>gprof_set_status <span class="op">=</span> user_ta_gprof_set_status<span class="op">,</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>这里除了TA请求的基本请求函数外（enter_open_session,enter_invoke_cmd,enter_close_session），还handle_svc函数，该函数和系统的syscall处理有关系，不同的handle_svc在不同场景下不同，后续可以深入分析。</p>
+<p>因此这里的enter_open_session钩子函数为例，即user_ta_enter_open_session的调用流：</p>
+<blockquote>
+<p>user_ta_enter_open_session</p>
+<p>-&gt;user_ta_enter(s, UTEE_ENTRY_FUNC_OPEN_SESSION, 0);</p>
+<p>-&gt;res = thread_enter_user_mode(func, kaddr_to_uref(session),</p>
+<p>                     (vaddr_t)usr_params, cmd, usr_stack,</p>
+<p>                     utc-&gt;uctx.entry_func,
+utc-&gt;uctx.is_32bit,</p>
+<p>                     &amp;utc-&gt;ta_ctx.panicked,</p>
+<p>                     &amp;utc-&gt;ta_ctx.panic_code);</p>
+<p>-&gt;set_ctx_regs(regs, a0, a1, a2, a3, user_sp, entry_func, spsr,
+keys);</p>
+<p>    rc = __thread_enter_user_mode(regs, exit_status0,
+exit_status1);</p>
+<p>-&gt;eret_to_user_mode</p>
+</blockquote>
+<p>有如下几点需要关注：</p>
+<ul>
+<li><p>func =
+UTEE_ENTRY_FUNC_OPEN_SESSION，这个在libutee的业务架构中会用到。</p></li>
+<li><p>set_ctx_regs:会将pc指针设置为entry_func，cspr设置为spsr</p></li>
+<li><p>eret_to_user_mode最终通过执行mov
+pc,lr，触发entry_func执行，最终会进user空间执行TA代码逻辑。</p></li>
+<li><p>utc-&gt;uctx.entry_func 在ldelf_load_ldelf中进行初始化，其即为TA
+（elf文件)入口函数，这里为函数__ta_entry。__ta_entry的定义在libutee.so，链接的时候，通过-e选项指定了elf文件的main函数：link-ldflags
+ = -e__ta_entry -pie。</p></li>
+</ul>
+<p>__thread_enter_user_mode为汇编实现，其最终调用了eret_to_user_mode，代码如下：</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>FUNC __thread_enter_user_mode <span class="op">,</span> <span class="op">:</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>UNWIND<span class="op">(</span>    <span class="op">.</span>cantunwind<span class="op">)</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">     * Save all registers to allow syscall_return() to resume execution</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">     * as if this function would have returned. This is also used in</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">     * syscall_panic().</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">     *</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">     * If stack usage of this function is changed</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">     * thread_unwind_user_mode() has to be updated.</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">     */</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    push    <span class="op">{</span>r4<span class="op">-</span>r12<span class="op">,</span>lr<span class="op">}</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co">     * Save old user sp and set new user sp.</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="co">     */</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    cps    #CPSR_MODE_SYS</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    mov    r4<span class="op">,</span> sp</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    ldr    sp<span class="op">,</span> <span class="op">[</span>r0<span class="op">,</span> #THREAD_CTX_REGS_USR_SP<span class="op">]</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    cps    #CPSR_MODE_SVC</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    push    <span class="op">{</span>r1<span class="op">,</span> r2<span class="op">,</span> r4<span class="op">,</span> r5<span class="op">}</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Prepare user mode entry via eret_to_user_mode */</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    ldr    lr<span class="op">,</span> <span class="op">[</span>r0<span class="op">,</span> #THREAD_CTX_REGS_PC<span class="op">]</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>    ldr    r4<span class="op">,</span> <span class="op">[</span>r0<span class="op">,</span> #THREAD_CTX_REGS_CPSR<span class="op">]</span></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    msr     spsr_fsxc<span class="op">,</span> r4</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    ldm    r0<span class="op">,</span> <span class="op">{</span>r0<span class="op">-</span>r12<span class="op">}</span></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>    b    eret_to_user_mode</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>END_FUNC __thread_enter_user_mode</span></code></pre></div>
+<p>___thread_enter_user_mode主要逻辑：</p>
+<ul>
+<li><p>保存现场，包括r4-r12，以及lr寄存器</p></li>
+<li><p>进入mode_sys,
+使用regs中的user_sp初始化sp执行，即切换stack到线程stack</p></li>
+<li><p>进入mode_svc,加载regs.pc指导lr，加载regs.cpsr到r4，并用r4更新cspr寄存器，</p></li>
+<li><p>使用regs中的值，初始化r0-r12寄存器，r0存放了func。这里即为恢复thread的执行上下文</p></li>
+<li><p>进入eret_to_user_mode，最终执行entry_func。这一步导致从内核EL1进入用户态EL0。</p></li>
+</ul>
+<h2 id="ta软件架构">7.TA软件架构</h2>
+<p>需要了解TA软件架构，必须先明白entry_func的初始化，以及和libutee.so的关系。</p>
+<p>对user_ta场景，optee-OS调用ldelf_load_ldelf完成TA加载和context初始化。继续分析，查看其逻辑是如何完成entry_func初始的。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>TEE_Result ldelf_load_ldelf<span class="op">(</span><span class="kw">struct</span> user_mode_ctx <span class="op">*</span>uctx<span class="op">)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    TEE_Result res <span class="op">=</span> TEE_SUCCESS<span class="op">;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    vaddr_t stack_addr <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    vaddr_t code_addr <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    vaddr_t rw_addr <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> prot <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    uctx<span class="op">-&gt;</span>is_32bit <span class="op">=</span> is_arm32<span class="op">;</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> alloc_and_map_ldelf_fobj<span class="op">(</span>uctx<span class="op">,</span> LDELF_STACK_SIZE<span class="op">,</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>                       TEE_MATTR_URW <span class="op">|</span> TEE_MATTR_PRW<span class="op">,</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>                       <span class="op">&amp;</span>stack_addr<span class="op">);</span>#分配栈空间</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>res<span class="op">)</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> res<span class="op">;</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    uctx<span class="op">-&gt;</span>ldelf_stack_ptr <span class="op">=</span> stack_addr <span class="op">+</span> LDELF_STACK_SIZE<span class="op">;</span>#栈从高往下偏移，因此将栈指针指向最顶端</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> alloc_and_map_ldelf_fobj<span class="op">(</span>uctx<span class="op">,</span> ldelf_code_size<span class="op">,</span> TEE_MATTR_PRW<span class="op">,</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>                       <span class="op">&amp;</span>code_addr<span class="op">);</span>#分配代码段</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>res<span class="op">)</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> res<span class="op">;</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    uctx<span class="op">-&gt;</span>entry_func <span class="op">=</span> code_addr <span class="op">+</span> ldelf_entry<span class="op">;</span>#设置入口函数，代码内存<span class="op">+</span>entry偏移</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>    rw_addr <span class="op">=</span> ROUNDUP<span class="op">(</span>code_addr <span class="op">+</span> ldelf_code_size<span class="op">,</span> SMALL_PAGE_SIZE<span class="op">);</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> alloc_and_map_ldelf_fobj<span class="op">(</span>uctx<span class="op">,</span> ldelf_data_size<span class="op">,</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>                       TEE_MATTR_URW <span class="op">|</span> TEE_MATTR_PRW<span class="op">,</span> <span class="op">&amp;</span>rw_addr<span class="op">);</span>#分配数据段</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>    memcpy<span class="op">((</span><span class="dt">void</span> <span class="op">*)</span>code_addr<span class="op">,</span> ldelf_data<span class="op">,</span> ldelf_code_size<span class="op">);</span>#将代码段copy到内存</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    memcpy<span class="op">((</span><span class="dt">void</span> <span class="op">*)</span>rw_addr<span class="op">,</span> ldelf_data <span class="op">+</span> ldelf_code_size<span class="op">,</span> ldelf_data_size<span class="op">);</span>@将数据段copy到内存</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> vm_set_prot<span class="op">(</span>uctx<span class="op">,</span> code_addr<span class="op">,</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>              ROUNDUP<span class="op">(</span>ldelf_code_size<span class="op">,</span> SMALL_PAGE_SIZE<span class="op">),</span> prot<span class="op">);</span>#设置代码段内存prot</span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> TEE_SUCCESS<span class="op">;</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>主要功能：</p>
+<ul>
+<li><p>分配栈空间，因为栈从高往低增长，因此将ldelf_stack_ptr指向高内存地方</p></li>
+<li><p>分配代码空间，并设置entry_func为代码空间+entry偏移</p></li>
+<li><p>分配数据段空间</p></li>
+<li><p>将代码和数据加载到内存已分配的内存中</p></li>
+</ul>
+<p>ldelf_entry和ldelf_data在gen_elf_hex.py中动态生成，例如ldelf_entry：</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>......</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    args <span class="op">=</span> get_args()</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    inf <span class="op">=</span> args.<span class="bu">input</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    outf <span class="op">=</span> args.output</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    elffile <span class="op">=</span> ELFFile(inf)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    outf.write(<span class="st">b&#39;/* Automatically generated, do no edit */</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    outf.write(<span class="st">b&#39;#include &lt;compiler.h&gt;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    outf.write(<span class="st">b&#39;#include &lt;stdint.h&gt;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    emit_load_segments(elffile, outf)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    outf.write(<span class="st">b&#39;const unsigned long ldelf_entry = %lu;</span><span class="ch">\n</span><span class="st">&#39;</span> <span class="op">%</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>               elffile.header[<span class="st">&#39;e_entry&#39;</span>])</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    inf.close()</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    outf.close()</span></code></pre></div>
+<p>libutee.so和__ta_entry</p>
+<blockquote>
+<p>FUNC __ta_entry, : UNWIND( .cantunwind) bl __ta_entry_c END_FUNC
+__ta_entry</p>
+</blockquote>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> __noreturn _C_FUNCTION<span class="op">(</span>__ta_entry<span class="op">)(</span><span class="dt">unsigned</span> <span class="dt">long</span> func<span class="op">,</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">unsigned</span> <span class="dt">long</span> session_id<span class="op">,</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                    <span class="kw">struct</span> utee_params <span class="op">*</span>up<span class="op">,</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">unsigned</span> <span class="dt">long</span> cmd_id<span class="op">)</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    TEE_Result res <span class="op">=</span> __utee_entry<span class="op">(</span>func<span class="op">,</span> session_id<span class="op">,</span> up<span class="op">,</span> cmd_id<span class="op">);</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#if defined(CFG_FTRACE_SUPPORT)</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">     * __ta_entry is the first TA API called from TEE core. As it being</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">     * __noreturn API, we need to call ftrace_return in this API just</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">     * before _utee_return syscall to get proper ftrace call graph.</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co">     */</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    ftrace_return<span class="op">();</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    _utee_return<span class="op">(</span>res<span class="op">);</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>__utee_entry节点函数，定义了ta业务架构，并调用提供给外实现的函数钩子</p>
+<blockquote>
+<p>__utee_entry-&gt;entry_open_session-&gt;<strong>TA_OpenSessionEntryPoint</strong></p>
+<p>__utee_entry-&gt;entry_close_session-&gt;<strong>TA_CloseSessionEntryPoint</strong>*</p>
+<p>__utee_entry-&gt;entry_invoke_command-&gt;<strong>TA_InvokeCommandEntryPoint</strong></p>
+</blockquote>
+<figure>
+<img src="./imgs2/op-tee-study-Page-7.drawio.png"
+alt="op-tee-study-Page-7.drawio.png" />
+<figcaption
+aria-hidden="true">op-tee-study-Page-7.drawio.png</figcaption>
+</figure>
+<p>_utee_return会触发syscall，进入syscall_sys_return</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>FUNC syscall_sys_return <span class="op">,</span> <span class="op">:</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    mov    r1<span class="op">,</span> #<span class="dv">0</span>    <span class="co">/* panic = false */</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    mov    r2<span class="op">,</span> #<span class="dv">0</span>    <span class="co">/* panic_code = 0 */</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    mov    r3<span class="op">,</span> r8    <span class="co">/* pointer to struct thread_svc_regs */</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    b    tee_svc_sys_return_helper</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>END_FUNC syscall_sys_return</span></code></pre></div>
+<p>tee_svc_sys_return_helper</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint32_t</span> tee_svc_sys_return_helper<span class="op">(</span><span class="dt">uint32_t</span> ret<span class="op">,</span> <span class="dt">bool</span> panic<span class="op">,</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                   <span class="dt">uint32_t</span> panic_code<span class="op">,</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                   <span class="kw">struct</span> thread_svc_regs <span class="op">*</span>regs<span class="op">)</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>panic<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        TAMSG_RAW<span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>        TAMSG_RAW<span class="op">(</span><span class="st">&quot;TA panicked with code 0x%&quot;</span> PRIx32<span class="op">,</span> panic_code<span class="op">);</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        save_panic_stack<span class="op">(</span>regs<span class="op">);</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifdef ARM32</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    regs<span class="op">-&gt;</span>r1 <span class="op">=</span> panic<span class="op">;</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    regs<span class="op">-&gt;</span>r2 <span class="op">=</span> panic_code<span class="op">;</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifdef ARM64</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    regs<span class="op">-&gt;</span>x1 <span class="op">=</span> panic<span class="op">;</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    regs<span class="op">-&gt;</span>x2 <span class="op">=</span> panic_code<span class="op">;</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ret<span class="op">;</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>在异常请求下，tee_svc_sys_return_helper会记录异常堆栈信息和相关寄存器。</p>
+<p>8.总结</p>
+<p>本次重点分析了op-tee的代码实现。还存在如下的场景未做分析：</p>
+<ul>
+<li><p>secure patition 机制</p></li>
+<li><p>非安全世界和安全世界的消息通信机制和共享内存管理</p></li>
+</ul>
+<p>这些问题，留作后续分析。</p>
+<p>以上是个人学习总结和理解，难免存在错误，希望大家给予指正，非常感谢</p>
+</body>
+</html>
